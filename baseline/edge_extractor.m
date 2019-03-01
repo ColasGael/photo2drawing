@@ -10,9 +10,13 @@ function edges_d = edge_extractor(im_rgb, thresh, k)
 %
 % Returns:
 %   'edges' (2D bool array): the location of the edges
-
-    % grayscale version
-    im_g = rgb2gray(im_rgb);
+    
+    if size(im_rgb, 3) > 1
+        % grayscale version
+        im_g = rgb2gray(im_rgb);
+    else
+        im_g = im_rgb
+    end
 
     % edge extraction
     edges =  edge3(im_g, 'approxcanny', thresh);

@@ -1,6 +1,5 @@
 function im_color = cluster_color(im_rgb, n_cluster, gamma, isLAB)
-% 'cluster_color' Apply k-means clustering to reduce the number of colors
-% of an RGB image
+% 'cluster_color' Apply k-means clustering to reduce the number of colors of an RGB image
 %
 % Args:
 %   'im_rgb' (3D double array): image to cluster colors from
