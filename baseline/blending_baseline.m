@@ -1,4 +1,4 @@
-function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, level, sigma_color, amplitude, sigma_g)
+function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, isLAB, level, sigma_color, amplitude, sigma_g)
 % 'blending_baseline' picture2drawing baseline
 %
 % Args:
@@ -11,6 +11,7 @@ function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, level,
 % increasing 'n_cluster' increases the similarity with the original image
 %   'gamma' (double): color adjustment parameters
 % increasing 'gamma' makes the color less saturated
+%   'isLAB' (bool): True if you want to perform the clustering in the LAB space
 %   'level' (double): gray level of edges
 % 0 = black ; 1 = white
 %   'sigma_color' (double): gaussian std for color smoothering
@@ -29,7 +30,7 @@ function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, level,
     edges_d = edge_extractor(im_rgb, thresh, k);
 
     % recolorized image
-    im_color = cluster_color(im_rgb, n_cluster, gamma);
+    im_color = cluster_color(im_rgb, n_cluster, gamma, isLAB);
 
     % add edges in black on image
     im_edge = im_color .* (1-edges_d)  + level*edges_d;
