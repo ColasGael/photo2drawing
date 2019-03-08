@@ -1,0 +1,8 @@
+function im_blend = blend_screen(im, im_draw, lambda_r)
+    % rescale 
+
+    % overlay screen mode
+    im_blend = 1 - (1 - (1-lambda_r)*im_draw).*(1 - lambda_r*im);
+    % normalization
+    im_blend = im_blend / max(im_blend(:));
+end
