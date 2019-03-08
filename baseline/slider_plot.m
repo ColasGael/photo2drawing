@@ -1,4 +1,5 @@
 function slider_plot(im_path)
+    %% usage: slider_plot('your_image.jpg') if your image is in the 'baseline' folder
 
     % reshape and save the original image
     im = im2double(imread(im_path));
@@ -33,7 +34,7 @@ function slider_plot(im_path)
     S.lambda_r = 1;
     S.im_blend = S.im;
         % set the axis position
-    S.ax = axes('unit','pix','position',[40 80 260 210]);
+    S.ax = axes('unit','pix','position',[400 800 260 210]);
         % plot the image
     S.LN = imshow(S.im_blend);
         % set the blend slider controller
