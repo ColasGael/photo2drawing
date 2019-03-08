@@ -1,0 +1,6 @@
+function im_blend = blend_overlay(im, im_draw)
+    % overlay blend mode
+    im_blend = 1 - (1 - (1-lambda)*im_draw).*(1 - lambda*im);
+    % normalization
+    im_blend = im_blend / max(im_blend(:));
+end
