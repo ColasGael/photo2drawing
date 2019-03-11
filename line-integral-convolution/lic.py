@@ -152,7 +152,7 @@ def bilerp(F, x, normalize=True):
         result = result[0]
     return result
 
-def line_integral_convolution(im_noise, vec, R=20, KW=7, use_tqdm=False):
+def line_integral_convolution(im_noise, vec, R=40, KW=7, use_tqdm=False):
     L = 2 * R
     H, W = im_noise.shape
     num_hits = np.zeros((H, W), dtype=np.int32)
