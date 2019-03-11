@@ -94,7 +94,7 @@ def extract_region_vector_field(im_gray, labels, label_counts,
     for i in range(H):
         for j in range(W):
             l = labels[i, j]
-            if var_vec[l] <= var_threshold:
+            if var_vec[l] > var_threshold:
                 vec[i, j, :] = mean_vec[l]
     
     if normalize:
@@ -158,8 +158,11 @@ def line_integral_convolution(im_noise, vec, R=20, KW=7, use_tqdm=False):
     num_hits = np.zeros((H, W), dtype=np.int32)
     result = np.zeros((H, W))
     
-    kernel = np.ones(KW) / KW
-    odeopts = {'rtol': 1e-3, 'atol': 1e-3}
+    #kernel = np.ones(KW) / KW
+    kernel = np.arange(KW) + 1
+    kernel = np.minimum(kernel, kernel[::-1])
+    kernel = kernel / np.sum(kernel)
+    odeopts = {'rtol': 1e-2, 'atol': 1e-2}
     df = lambda y, t: bilerp(vec, y)
     
     skipped = 0
@@ -168,6 +171,14 @@ def line_integral_convolution(im_noise, vec, R=20, KW=7, use_tqdm=False):
     if use_tqdm:
         work = tqdm.tqdm(work)
 
+    import time
+    int_time = 0.0
+    int2_time = 0.0
+    conv_time = 0.0
+    acc_time = 0.0
+    
+    df2 = lambda t, y: bilerp(vec, y)
+    
     for pixel_num, pixel in work:
         i, j = pixel
         if num_hits[i, j] > 0:
@@ -180,14 +191,26 @@ def line_integral_convolution(im_noise, vec, R=20, KW=7, use_tqdm=False):
         line_s = np.zeros((L + 1, 2))
         line_s[R, :] = [i + 0.5, j + 0.5]
 
+        st=time.time()
         forward = scipy.integrate.odeint(df, line_s[R, :], np.arange(R + 1), **odeopts)
         backward = scipy.integrate.odeint(df, line_s[R, :], -np.arange(R + 1), **odeopts)
         line_s[R:, :] = forward
         line_s[:R, :] = backward[1:][::-1]
+        int_time += time.time() - st
+        
+        st=time.time()
+        #f2 = scipy.integrate.solve_ivp(df2, (0, R), line_s[R, :], t_eval=np.arange(R + 1)).y.T
+        #b2 = scipy.integrate.solve_ivp(df2, (0, -R), line_s[R, :], t_eval=-np.arange(R + 1)).y.T
+        #line_s[R:, :] = f2
+        #line_s[:R, :] = b2[1:][::-1]
+        int2_time += time.time() - st
 
+        st=time.time()
         samples = np.array([bilerp(im_noise, line_s[i, :], False) for i in range(L + 1)])
         samples_conv = scipy.signal.convolve(samples, kernel, mode='same')
+        conv_time += time.time() - st
 
+        st=time.time()
         line_si = np.floor(line_s[KW-1:-(KW-1), 0]).astype(np.int32)
         line_sj = np.floor(line_s[KW-1:-(KW-1), 1]).astype(np.int32)
         usable_samples = samples_conv[KW-1:(-KW-1)]
@@ -195,6 +218,11 @@ def line_integral_convolution(im_noise, vec, R=20, KW=7, use_tqdm=False):
             if 0 <= si and si < H and 0 <= sj and sj < W:
                 num_hits[si, sj] += 1
                 result[si, sj] += sample
+        acc_time += time.time() - st
     
+    print("int_time {}".format(int_time))
+    print("int2_time {}".format(int2_time))
+    print("conv_time {}".format(conv_time))
+    print("acc_time {}".format(acc_time))
     result /= num_hits
     return result
