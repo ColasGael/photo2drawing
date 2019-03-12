@@ -34,7 +34,7 @@ function im_draw = blending_segment(im_rgb, thresh, k, gd_thresh, se_size, gamma
     im_color = segment_color(im_rgb, gd_thresh, se_size, gamma);
 
     % add edges in black on image
-    im_edge = im_color .*divide_regions(img_rgb, 4,16,2000).* (im (1-edges_d)  + level*edges_d;
+    im_edge = im_color .* (1-edges_d)  + level*edges_d;
 
     % use smoothered grayscale for color gradient effect
     color_gradient =  amplitude * imgaussfilt(im_g, sigma_g); 

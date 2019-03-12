@@ -1,4 +1,4 @@
-function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, isLAB, level, sigma_color, amplitude, sigma_g)
+function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, isLAB, level, sigma_color, amplitude, sigma_g, se1_size, se2_size, region_thresh)
 % 'blending_baseline' picture2drawing baseline
 %
 % Args:
@@ -31,6 +31,10 @@ function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, isLAB,
 
     % recolorized image
     im_color = cluster_color(im_rgb, n_cluster, gamma, isLAB);
+    
+    % use saliency map to restrict regions of color
+    mask = get_mask(im_rgb, se1_size, se2_size, region_thresh);
+    im_color = mask.*im_color + (1-mask).*im_g;
 
     % add edges in black on image
     im_edge = im_color .* (1-edges_d)  + level*edges_d;
@@ -43,5 +47,6 @@ function im_draw = blending_baseline(im_rgb, thresh, k, n_cluster, gamma, isLAB,
     % apply the color gradient information
     im_gc = imgaussfilt(im_edge, sigma_color) .* color_gradient;
     im_draw = im_gc / max(im_gc(:));
+    
 end
 
