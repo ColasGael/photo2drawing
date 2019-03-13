@@ -1,12 +1,10 @@
-function im_draw = blending_segment(im_rgb, thresh, k, gd_thresh, se_size, gamma, level, sigma_color, amplitude, sigma_g)
+function im_draw = drawing_pipeline(im_rgb, lic_path, kw, gd_thresh, se_size, gamma, level, sigma_color, amplitude, sigma_g)
 % 'blending_segment' picture2drawing blending using color reduction from region segmentation
 %
 % Args:
 %   'im_rgb' (3D double array): original image
-%   'thresh' (double): threshold for edge extraction
-% increasing 'thresh' decreases the amount of edge detected
-%   'k' (int): size of the dilatation structuring element
-% increasing 'k' increases the width of the edges
+%   'lic_path' (String): path to the precomputed LIC line sketches
+%   'kw' (int): kernel width used in the Line Integral Convolution operation
 %   'gd_thresh' (double): threshold for region boundaries detection
 % decreasing 'gd_thresh' increases the number of regions and thus the closeness to the initial image
 %   'se_size' (int): size of structural element used for Open-Close operation
@@ -28,13 +26,14 @@ function im_draw = blending_segment(im_rgb, thresh, k, gd_thresh, se_size, gamma
     im_g = rgb2gray(im_rgb);
 
     % edges
-    edges_d = edge_extractor(im_rgb, thresh, k);
+    sketch = lic_sketch(im_rgb, lic_path, kw);
 
     % recolorized image
     im_color = segment_color(im_rgb, gd_thresh, se_size, gamma);
 
-    % add edges in black on image
-    im_edge = im_color .* (1-edges_d)  + level*edges_d;
+    % screen blend mode
+    lambda_r = 0.7;
+    im_blend = 1 - (1 - (1-lambda_r)*sketch).*(1 - lambda_r*im_color);
 
     % use smoothered grayscale for color gradient effect
     color_gradient =  amplitude * imgaussfilt(im_g, sigma_g); 
@@ -42,7 +41,7 @@ function im_draw = blending_segment(im_rgb, thresh, k, gd_thresh, se_size, gamma
     color_gradient = color_gradient + (0.5 - mean(color_gradient(:)));
 
     % apply the color gradient information
-    im_gc = imgaussfilt(im_edge, sigma_color) .* color_gradient;
+    im_gc = imgaussfilt(im_blend, sigma_color) .* color_gradient;
     im_draw = im_gc / max(im_gc(:));
 end
 

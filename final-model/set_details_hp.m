@@ -9,11 +9,9 @@ function hp_out = set_details_hp(hp, lambda_d)
 % Returns:
 %   'hp_out' (Struct): structure gathering all the modified hyperparameters as its fields
 
-    %% Edge detection
-    % edge detection threshold
-    hp.thresh = 0.3*(1-lambda_d)+0.15;
-    % size of dilatation structuring element
-    hp.k = round(2*lambda_d)+1; 
+    %% Line sketch generation
+    % kernel width used in the Line Integral Convolution operation
+    hp.k = round(18*lambda_d)+2; 
     %% Color from region segmentation
     % threshold for region boundaries detection
     hp.gd_thresh = 0.2*(1-lambda_d); 
