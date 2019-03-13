@@ -1,7 +1,6 @@
 function gui_baseline(im_path, varargin)
     %% usage: gui_baseline('your_image.jpg') if your image is in the 'baseline' folder
 
-    i
     % reshape and save the original image
     im = im2double(imread(im_path));
     S.im = imresize(im, 250/size(im,1));
@@ -9,9 +8,6 @@ function gui_baseline(im_path, varargin)
     % define the initial hyperparameters
     hp.thresh = 0.2; % threshold for edge detection
     hp.k = 2; % size of dilatation structuring element
-    hp.n_cluster = 4; % number of output colors
-    hp.gamma = 0.5; % color adjustement
-    hp.isLAB = true; % space in which to perform the clustering
 
     hp.gd_thresh = 0.1; % threshold for region boundaries detection
     hp.se_size = 15; % size of structural element
@@ -25,7 +21,6 @@ function gui_baseline(im_path, varargin)
     S.hp = hp;
     
     % compute and save the drawing image
-    %S.im_draw = blending_baseline_hp(S.im, S.hp);
     S.im_draw = blending_segment_hp(S.im, S.hp);
     
     % plot different blended images according to the sliders location
@@ -78,13 +73,13 @@ function bl_call(varargin)
     end
     
     % adapt the blending with respect to the slider parameter
-    S.lambda_r = get(h, 'value');
-    S.im_blend = blend_screen(S.im, im_draw, S.lambda_r);
+    lambda_r = get(h, 'value');
+    im_blend = blend_screen(S.im, im_draw, lambda_r);
     % display the modified image
-    S.LN = imshow(S.im_blend);
+    imshow(im_blend);
     
     % store the value for the other slider
-    h.UserData = S.lambda_r;
+    h.UserData = lambda_r;
 end
 
 function draw_call(varargin)
@@ -101,15 +96,14 @@ function draw_call(varargin)
     
     % adapt the drawing hyperparameters with respect to the slider parameter
     lambda_d = get(h, 'value');
-    S.hp = set_details_hp(S.hp, lambda_d);
+    hp = set_details_hp(S.hp, lambda_d);
     % recompute the drawing image
-    %S.im_draw = blending_baseline_hp(S.im, S.hp);
-    S.im_draw = blending_segment_hp(S.im, S.hp);
+    im_draw = blending_segment_hp(S.im, hp);
     
     % display the blended result
-    S.im_blend = blend_screen(S.im, S.im_draw, lambda_r);
-    S.LN = imshow(S.im_blend);
+    im_blend = blend_screen(S.im, im_draw, lambda_r);
+    imshow(im_blend);
     
     % store the drawing for the other slider
-    h.UserData = S.im_draw;
+    h.UserData = im_draw;
 end

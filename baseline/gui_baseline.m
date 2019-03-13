@@ -12,10 +12,6 @@ function gui_baseline(im_path, varargin)
     hp.gamma = 0.5; % color adjustement
     hp.isLAB = true; % space in which to perform the clustering
 
-    hp.gd_thresh = 0.1; % threshold for region boundaries detection
-    hp.se_size = 15; % size of structural element
-    hp.gamma_2 = 0.8; % color adjustement
-
     hp.level = 0.5; % color of edges
     hp.sigma_color = 0.1; % std for color smoothering
     hp.amplitude = 1; % importance of color gradient
@@ -25,7 +21,6 @@ function gui_baseline(im_path, varargin)
     
     % compute and save the drawing image
     S.im_draw = blending_baseline_hp(S.im, S.hp);
-    %S.im_draw = blending_segment_hp(S.im, S.hp);
     
     % plot different blended images according to the sliders location
         % create the figure
@@ -103,7 +98,6 @@ function draw_call(varargin)
     hp = set_details_hp(S.hp, lambda_d);
     % recompute the drawing image
     im_draw = blending_baseline_hp(S.im, hp);
-    %S.im_draw = blending_segment_hp(S.im, S.hp);
     
     % display the blended result
     im_blend = blend_screen(S.im, im_draw, lambda_r);
