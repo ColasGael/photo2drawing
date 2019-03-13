@@ -13,7 +13,7 @@ function sketch = lic_sketch(im_rgb, lic_path, kw)
 %   This is because we implemented a faster Python script to generate them
     
     % path to the desired LIC line sketch
-    sketch_path = char(lic_path(1:end-4) + "_KW-" + string(kw) + ".jpg");
+    sketch_path = char(string(lic_path(1:end-4)) + "_KW-" + string(kw) + ".jpg")
     
     % load the LIC line sketch
     sketch = im2double(imread(sketch_path));

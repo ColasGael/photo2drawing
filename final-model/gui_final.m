@@ -1,27 +1,30 @@
-function gui_baseline(im_path, varargin)
-    %% usage: gui_baseline('your_image.jpg') if your image is in the 'baseline' folder
-
+function gui_baseline(im_path, lic_path, varargin)
+    %% usage: gui_baseline('your_image.jpg', 'lic.jpg') if your image is in the 'baseline' folder
+    
+    % cast to char arrays
+    im_path = char(im_path);
+    lic_path = char(lic_path);
+    
     % reshape and save the original image
     im = im2double(imread(im_path));
     S.im = imresize(im, 250/size(im,1));
     
     % define the initial hyperparameters
-    hp.thresh = 0.2; % threshold for edge detection
-    hp.k = 2; % size of dilatation structuring element
+    hp.kw = 12; % kernel width used in the Line Integral Convolution operation
 
     hp.gd_thresh = 0.1; % threshold for region boundaries detection
     hp.se_size = 15; % size of structural element
     hp.gamma_2 = 0.8; % color adjustement
 
-    hp.level = 0.5; % color of edges
     hp.sigma_color = 0.1; % std for color smoothering
     hp.amplitude = 1; % importance of color gradient
     hp.sigma_g = 5; % std for color gradient
         % store the hyperparamters
+    S.lic_path = lic_path;
     S.hp = hp;
     
     % compute and save the drawing image
-    S.im_draw = blending_segment_hp(S.im, S.hp);
+    S.im_draw = drawing_pipeline_hp(S.im, S.lic_path, S.hp);
     
     % plot different blended images according to the sliders location
         % create the figure
@@ -98,7 +101,7 @@ function draw_call(varargin)
     lambda_d = get(h, 'value');
     hp = set_details_hp(S.hp, lambda_d);
     % recompute the drawing image
-    im_draw = blending_segment_hp(S.im, hp);
+    im_draw = drawing_pipeline_hp(S.im, S.lic_path, hp);
     
     % display the blended result
     im_blend = blend_screen(S.im, im_draw, lambda_r);

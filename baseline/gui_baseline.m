@@ -1,6 +1,9 @@
 function gui_baseline(im_path, varargin)
     %% usage: gui_baseline('your_image.jpg') if your image is in the 'baseline' folder
-
+    
+    % cast to char arrays
+    im_path = char(im_path);
+    
     % reshape and save the original image
     im = im2double(imread(im_path));
     S.im = imresize(im, 250/size(im,1));

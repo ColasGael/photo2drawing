@@ -1,4 +1,4 @@
-function im_draw = drawing_pipeline(im_rgb, lic_path, kw, gd_thresh, se_size, gamma, level, sigma_color, amplitude, sigma_g)
+function im_draw = drawing_pipeline(im_rgb, lic_path, kw, gd_thresh, se_size, gamma, sigma_color, amplitude, sigma_g)
 % 'blending_segment' picture2drawing blending using color reduction from region segmentation
 %
 % Args:
@@ -11,8 +11,6 @@ function im_draw = drawing_pipeline(im_rgb, lic_path, kw, gd_thresh, se_size, ga
 % decreasing 'se_size' increases the number of regions and thus the closeness to the initial image
 %   'gamma' (double): color adjustment parameters
 % increasing 'gamma' makes the color less saturated
-%   'level' (double): gray level of edges
-% 0 = black ; 1 = white
 %   'sigma_color' (double): gaussian std for color smoothering
 % increasing 'sigma_color' increases the blur
 %   'amplitude' (double): importance factor of color gradient information
