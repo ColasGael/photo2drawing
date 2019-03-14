@@ -12,6 +12,8 @@ To get more details about our 'photo2drawing' pipeline, please refer to our fina
 Folder 'saliency-mask': experiment on using saliency maps to select regions of interest.
 
 Folder 'line-integral-convolution': Python code to compute Line Integral Convolution.
+ - line_integral_convolution.m: Matlab implementation of LIC
+ - lic.py: Python/OpenCV/Scipy implementation of LIC which is much faster than Matlab
 
 Folder 'baseline': gathers code for our 'baseline' pipeline.
  - line sketch generation: Canny Edge Detector
