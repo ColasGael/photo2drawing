@@ -1,9 +1,9 @@
 # photo2drawing
-by Gael Colas, Hubert Teo and Andrew Deng, Stanford University students.
+by Gael Colas, Hubert Teo and Andrew Deng, graduate students from Stanford University.
+
+This is our final project for the EE368: "Digital Image Processing" class at Stanford (2019).
 
 Goal : Automatic generation of pencil color drawings from color photos.
-
-This is our final project for EE368 "Digital Image Processing" class at Stanford.
 
 To achieve this image translation task with build a pipeline. The pipeline is composed of 3 components: get a line sketch, get a colorization and blend/ apply the colors over the line sketch.
 To get more details about our 'photo2drawing' pipeline, please refer to our final report 'ee368_final-report' located at the root.
